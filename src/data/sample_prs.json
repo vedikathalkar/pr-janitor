@@ -1,0 +1,135 @@
+{
+  "repo": "freeCodeCamp/freeCodeCamp",
+  "fetched_at_fallback": true,
+  "pull_requests": [
+    {
+      "number": 58231,
+      "title": "fix: typo in README",
+      "author": "newcontributor123",
+      "author_account_created": "2026-06-15",
+      "author_total_prs_this_repo": 1,
+      "author_total_prs_all_repos_30d": 14,
+      "files_changed": ["README.md"],
+      "additions": 1,
+      "deletions": 1,
+      "linked_issue": null,
+      "has_tests": false,
+      "commit_messages": ["fix typo"],
+      "body": "fixed a typo",
+      "created_at": "2026-06-18T10:00:00Z"
+    },
+    {
+      "number": 58245,
+      "title": "Fix: race condition in challenge submission handler",
+      "author": "vedikathalkar",
+      "author_account_created": "2023-02-10",
+      "author_total_prs_this_repo": 3,
+      "author_total_prs_all_repos_30d": 5,
+      "files_changed": [
+        "api/server/boot/challenge.js",
+        "api/server/boot/challenge.test.js"
+      ],
+      "additions": 47,
+      "deletions": 12,
+      "linked_issue": 58210,
+      "has_tests": true,
+      "commit_messages": [
+        "fix: prevent duplicate submission on slow network retry",
+        "test: add coverage for concurrent submit calls"
+      ],
+      "body": "Fixes #58210. The submission handler did not guard against duplicate concurrent requests when a client retried after a slow response, causing double XP awards. Added a mutex-style lock keyed on userId+challengeId and a regression test.",
+      "created_at": "2026-06-19T14:22:00Z"
+    },
+    {
+      "number": 58250,
+      "title": "Update README.md",
+      "author": "gssoc_farmer_22",
+      "author_account_created": "2026-06-10",
+      "author_total_prs_this_repo": 1,
+      "author_total_prs_all_repos_30d": 31,
+      "files_changed": ["README.md"],
+      "additions": 2,
+      "deletions": 2,
+      "linked_issue": null,
+      "has_tests": false,
+      "commit_messages": ["Update README.md"],
+      "body": "minor improvement",
+      "created_at": "2026-06-20T08:15:00Z"
+    },
+    {
+      "number": 58262,
+      "title": "fix(curriculum): correct broken link in JS basics lesson 12",
+      "author": "anita-dev",
+      "author_account_created": "2024-09-01",
+      "author_total_prs_this_repo": 8,
+      "author_total_prs_all_repos_30d": 2,
+      "files_changed": ["curriculum/challenges/english/01-javascript/basic-javascript/lesson-12.md"],
+      "additions": 1,
+      "deletions": 1,
+      "linked_issue": 58201,
+      "has_tests": false,
+      "commit_messages": ["fix(curriculum): correct broken link in JS basics lesson 12"],
+      "body": "Fixes #58201. The MDN link for Array.prototype.map returned a 404 due to a locale prefix typo. Updated to the canonical URL.",
+      "created_at": "2026-06-19T19:40:00Z"
+    },
+    {
+      "number": 58267,
+      "title": "added my name to contributors",
+      "author": "spammer_acct_07",
+      "author_account_created": "2026-06-21",
+      "author_total_prs_this_repo": 1,
+      "author_total_prs_all_repos_30d": 22,
+      "files_changed": ["CONTRIBUTORS.md"],
+      "additions": 1,
+      "deletions": 0,
+      "linked_issue": null,
+      "has_tests": false,
+      "commit_messages": ["added my name to contributors"],
+      "body": "",
+      "created_at": "2026-06-21T11:05:00Z"
+    },
+    {
+      "number": 58271,
+      "title": "fix: CSV export allows formula injection via user-supplied notes field",
+      "author": "rahul-sec",
+      "author_account_created": "2022-11-20",
+      "author_total_prs_this_repo": 12,
+      "author_total_prs_all_repos_30d": 1,
+      "files_changed": [
+        "api/server/utils/csv-export.js",
+        "api/server/utils/csv-export.test.js"
+      ],
+      "additions": 33,
+      "deletions": 4,
+      "linked_issue": 58255,
+      "has_tests": true,
+      "commit_messages": [
+        "fix: sanitize leading =,+,-,@ chars before CSV export",
+        "test: formula injection regression coverage"
+      ],
+      "body": "Fixes #58255. User notes containing values like =cmd|'/c calc'!A1 were exported unsanitized, enabling formula injection if the CSV is opened in Excel/Sheets. Prefixing risky leading characters with a single quote per OWASP guidance.",
+      "created_at": "2026-06-17T09:30:00Z"
+    },
+    {
+      "number": 58275,
+      "title": "fix duplicate session bug",
+      "author": "another_farmer",
+      "author_account_created": "2026-05-28",
+      "author_total_prs_this_repo": 1,
+      "author_total_prs_all_repos_30d": 19,
+      "files_changed": ["client/src/redux/index.ts"],
+      "additions": 4,
+      "deletions": 0,
+      "linked_issue": null,
+      "has_tests": false,
+      "commit_messages": ["fix duplicate session bug"],
+      "body": "this also fixes the session issue mentioned somewhere",
+      "created_at": "2026-06-20T16:50:00Z"
+    }
+  ],
+  "closed_issues_and_prs": [
+    {"number": 58201, "title": "Broken MDN link in JS basics lesson 12", "state": "closed"},
+    {"number": 58188, "title": "Duplicate XP awarded on slow network retry", "state": "closed", "linked_pr": 58245},
+    {"number": 58255, "title": "CSV export vulnerable to formula injection", "state": "open"}
+  ]
+}
