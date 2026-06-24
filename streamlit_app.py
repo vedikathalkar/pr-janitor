@@ -89,9 +89,10 @@ if result is None:
     st.info("Set a repo in the sidebar and click **Run triage** to get started.")
 else:
     if result["used_fallback_data"]:
+        reason = result.get("fallback_reason") or "live GitHub API unavailable"
         st.warning(
-            "Live GitHub API unavailable or rate-limited — showing bundled sample data "
-            "modeled on real spam vs. legitimate PR patterns.",
+            f"Falling back to bundled sample data — reason: {reason}. "
+            "Sample data is modeled on real spam vs. legitimate PR patterns.",
             icon="⚠️",
         )
     else:

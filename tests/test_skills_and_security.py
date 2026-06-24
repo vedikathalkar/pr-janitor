@@ -118,7 +118,15 @@ def test_approval_queue_blocks_until_approved():
     assert len(queue.pending()) == 0
 
 
-def test_github_client_blocks_write_without_approval():
+def test_fallback_reason_distinguishes_error_types():
+    client = GitHubClient(repo="x/y")
+    assert "not found" in client._reason_for_status(404)
+    assert "rate limit" in client._reason_for_status(403)
+    assert "rate limit" in client._reason_for_status(429)
+    assert "token rejected" in client._reason_for_status(401)
+
+
+
     client = GitHubClient(repo="some/repo", token="fake-token")
     result = client.post_comment_if_approved(1, "hi", approved=False)
     assert result["status"] == "blocked"

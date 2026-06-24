@@ -56,6 +56,7 @@ class GitHubClient:
         self.repo = repo
         self.token = token or os.environ.get("GITHUB_TOKEN")
         self.used_fallback = False
+        self.fallback_reason: str | None = None
 
     def _headers(self) -> dict:
         headers = {"Accept": "application/vnd.github+json"}
@@ -63,15 +64,26 @@ class GitHubClient:
             headers["Authorization"] = f"Bearer {self.token}"
         return headers
 
-    def _load_fallback(self) -> dict:
+    def _load_fallback(self, reason: str) -> dict:
         self.used_fallback = True
+        self.fallback_reason = reason
         with open(SAMPLE_DATA_PATH) as f:
             return json.load(f)
+
+    def _reason_for_status(self, status_code: int) -> str:
+        if status_code == 404:
+            return f"repository '{self.repo}' not found — check the spelling (format: owner/repo)"
+        if status_code in (403, 429):
+            return "GitHub API rate limit reached"
+        if status_code == 401:
+            return "GitHub token rejected — check it's valid and not expired"
+        return f"GitHub API returned an unexpected error ({status_code})"
 
     def fetch_open_pull_requests(self, limit: int = 10, fetch_file_details: bool = True) -> list[dict[str, Any]]:
         """
         Returns a list of PR dicts. Tries the live API first; falls back to
-        bundled sample data on any error (rate limit, network, auth issue).
+        bundled sample data on any error (rate limit, network, auth issue),
+        and records *why* in self.fallback_reason for accurate UI messaging.
 
         If `fetch_file_details` is True (default), makes one extra API call
         per PR to get real files_changed/has_tests. Set to False to save
@@ -86,11 +98,12 @@ class GitHubClient:
                 timeout=10,
             )
             if resp.status_code != 200:
-                raise RuntimeError(f"GitHub API returned {resp.status_code}: {resp.text[:200]}")
+                data = self._load_fallback(self._reason_for_status(resp.status_code))
+                return data["pull_requests"][:limit]
             raw = resp.json()
             return [self._normalize_live_pr(pr, fetch_file_details) for pr in raw]
-        except Exception:
-            data = self._load_fallback()
+        except requests.RequestException as e:
+            data = self._load_fallback(f"network error reaching GitHub ({e.__class__.__name__})")
             return data["pull_requests"][:limit]
 
     def _fetch_pr_files(self, pr_number: int) -> list[str] | None:
@@ -146,11 +159,12 @@ class GitHubClient:
                 timeout=10,
             )
             if resp.status_code != 200:
-                raise RuntimeError(f"GitHub API returned {resp.status_code}")
+                data = self._load_fallback(self._reason_for_status(resp.status_code))
+                return data["closed_issues_and_prs"]
             raw = resp.json()
             return [{"number": i["number"], "title": i["title"], "state": i["state"]} for i in raw]
-        except Exception:
-            data = self._load_fallback()
+        except requests.RequestException as e:
+            data = self._load_fallback(f"network error reaching GitHub ({e.__class__.__name__})")
             return data["closed_issues_and_prs"]
 
     def post_comment_if_approved(self, pr_number: int, body: str, approved: bool) -> dict[str, Any]:

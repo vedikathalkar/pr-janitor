@@ -29,7 +29,8 @@ CATEGORY_EMOJI = {
 def print_report(result: dict) -> None:
     print(f"\n=== PR Janitor Report: {result['repo']} ===")
     if result["used_fallback_data"]:
-        print("(Live GitHub API unavailable/rate-limited — using bundled sample data)\n")
+        reason = result.get("fallback_reason") or "live GitHub API unavailable"
+        print(f"(Using bundled sample data — reason: {reason})\n")
     else:
         print("(Live data from GitHub REST API)\n")
 

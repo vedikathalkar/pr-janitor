@@ -62,6 +62,7 @@ def run_heuristic_pipeline(repo: str, limit: int = 10, audit_log_path: str | Non
     prs = client.fetch_open_pull_requests(limit=limit)
     closed_items = client.fetch_closed_issues_and_prs()
     used_fallback = client.used_fallback
+    fallback_reason = client.fallback_reason
 
     queue = ApprovalQueue(audit_log_path=audit_log_path)
     report_rows = []
@@ -102,6 +103,7 @@ def run_heuristic_pipeline(repo: str, limit: int = 10, audit_log_path: str | Non
     return {
         "repo": repo,
         "used_fallback_data": used_fallback,
+        "fallback_reason": fallback_reason,
         "report": report_rows,
         "approval_queue": queue,
     }
