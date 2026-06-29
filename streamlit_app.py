@@ -75,8 +75,12 @@ if "result" not in st.session_state:
     st.session_state.result = None
 
 if run_clicked:
-    token = st.secrets.get("GITHUB_TOKEN", None) if hasattr(st, "secrets") else None
-    os.environ.setdefault("GITHUB_TOKEN", token or "")
+    try:
+        token = st.secrets.get("GITHUB_TOKEN", None)
+    except Exception:
+        token = None
+    if token:
+        os.environ["GITHUB_TOKEN"] = token
     with st.spinner("Running Intake → Classifier → Triage → Drafter..."):
         st.session_state.result = run_heuristic_pipeline(repo, limit=limit)
 
